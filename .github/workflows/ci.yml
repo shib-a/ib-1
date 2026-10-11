@@ -81,22 +81,22 @@ jobs:
 
       - name: List reports
         if: always()
-        run: ls -la build/reports/
+        run: ls -la build/reports/dependency-check/
 
       - name: upload sarif
-        if: always() && hashFiles('build/reports/dependency-check-report.sarif') != ''
+        if: always() && hashFiles('build/reports/dependency-check/dependency-check-report.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: build/reports/dependency-check-report.sarif
+          sarif_file: build/reports/dependency-check/dependency-check-report.sarif
           category: dependency-check
 
       - name: upload report artifact
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
-          path: build/reports/dependency-check-report.*
-          if-no-files-found: ignore
+          path: build/reports/dependency-check/
+          if-no-files-found: warn
 
   security-gate:
     name: summary
