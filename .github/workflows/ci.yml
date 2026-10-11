@@ -104,3 +104,7 @@ jobs:
         run: |
           echo "spotbugs:         ${{ needs.spotbugs.result }}"
           echo "dependency-check: ${{ needs.dependency-check.result }}"
+          if echo "${{ needs.spotbugs.result }} ${{ needs.dependency-check.result }}" \
+               | grep -qE 'failure|cancelled'; then
+            exit 1
+          fi
