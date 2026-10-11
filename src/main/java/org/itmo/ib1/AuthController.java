@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/auth")
 public class AuthController {
-    @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
-        
-    }
+//    @PostMapping("/login")
+//    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+//
+//    }
 }

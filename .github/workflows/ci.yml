@@ -77,7 +77,7 @@ jobs:
       - name: run dependency check
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        run: ./gradlew dependencyCheckAnalyze
+        run: ./gradlew dependencyCheckAnalyze -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
 
       - name: upload sarif
         if: always() && hashFiles('build/reports/dependency-check-report.sarif') != ''
