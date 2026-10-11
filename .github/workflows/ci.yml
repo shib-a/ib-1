@@ -25,9 +25,9 @@ jobs:
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
@@ -45,7 +45,7 @@ jobs:
 
       - name: upload report artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: spotbugs-report
           path: build/reports/spotbugs/
@@ -55,9 +55,9 @@ jobs:
     name: SCA (dependency-check)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
@@ -88,14 +88,14 @@ jobs:
 
       - name: upload report artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dependency-check-report
           path: build/reports/dependency-check-report.*
           if-no-files-found: ignore
 
   security-gate:
-    name: Security gate
+    name: summary
     needs: [spotbugs, dependency-check]
     if: always()
     runs-on: ubuntu-latest
