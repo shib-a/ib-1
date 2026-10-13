@@ -3,25 +3,27 @@ package org.itmo.ib1;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
 
 @Component
-public class JwtService {
-    private final SecretKey signingKey;
+public final class JwtService {
+    private static final String ISSUER = "ib-1";
 
-    private JwtService(@Value("${jwt.signing.key}") String jwtSecret) {
-        this.signingKey = new SecretKeySpec(jwtSecret.getBytes(),
-                Jwts.SIG.HS256.getId());
+    private final SecretKey signingKey;
+    private final Duration ttl;
+
+    public JwtService(@Value("${jwt.signing.key}") String jwtSecret, @Value("${jwt.ttl:10m}") Duration ttl) {
+        this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        this.ttl = ttl;
     }
 
     public String createToken(Map<String, Object> claims, String subject) {
@@ -29,18 +31,19 @@ public class JwtService {
         return Jwts.builder().claims()
                 .add(claims)
                 .subject(subject)
-                .issuer("TestApplication")
+                .issuer(ISSUER)
                 .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plus(10, ChronoUnit.MINUTES)))
+                .expiration(Date.from(now.plus(ttl)))
                 .and()
-                .signWith(signingKey)
+                .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
     }
+
     public Jws<Claims> parseToken(String token){
-        return Jwts.parser().decryptWith(signingKey).build().parseSignedClaims(token);
+        return Jwts.parser().verifyWith(signingKey).requireIssuer(ISSUER).build().parseSignedClaims(token);
     }
 
     public Claims parseTokenClaims(String token){
-        return Jwts.parser().decryptWith(signingKey).build().parseSignedClaims(token).getPayload();
+        return parseToken(token).getPayload();
     }
 }

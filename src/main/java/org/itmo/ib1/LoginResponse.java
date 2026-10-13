@@ -1,5 +1,4 @@
 package org.itmo.ib1;
 
-public class LoginResponse {
-    String token;
+public record LoginResponse(String token) {
 }
