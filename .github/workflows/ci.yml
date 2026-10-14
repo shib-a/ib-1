@@ -77,7 +77,7 @@ jobs:
       - name: update vulnerability db
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        run: ./gradlew dependencyCheckUpdate -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
+        run: ./gradlew dependencyCheckUpdate --info -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
 
       - name: save vulnerability db
         uses: actions/cache/save@v4
