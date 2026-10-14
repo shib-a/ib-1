@@ -9,6 +9,7 @@ plugins {
 group = 'org.itmo'
 version = '0.0.1-SNAPSHOT'
 description = 'ib-1'
+ext['tomcat.version'] = '11.0.27'
 
 java {
     toolchain {
